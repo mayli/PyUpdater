@@ -29,6 +29,7 @@ import subprocess
 import os
 import sys
 import time
+import threading
 
 from dsdev_utils.paths import ChDir
 import pytest
@@ -40,6 +41,19 @@ from tconfig import TConfig
 AUTO_UPDATE_PAUSE = 120
 TICK = 5
 
+def synchronized(lock):
+    """ Synchronization decorator. """
+
+    def wrap(f):
+        def newFunction(*args, **kw):
+            lock.acquire()
+            try:
+                return f(*args, **kw)
+            finally:
+                lock.release()
+        return newFunction
+    return wrap
+UPDATE_LOCK = threading.Lock()
 
 @pytest.mark.usefixtures('cleandir', 'create_keypack', 'pyu')
 class TestSetup(object):
@@ -60,6 +74,7 @@ class TestSetup(object):
 @pytest.mark.usefixtures('cleandir')
 class TestExecutionExtraction(object):
 
+    @synchronized(UPDATE_LOCK)
     def test_execution_onefile_extract(self, datadir, simpleserver, pyu):
         data_dir = datadir['update_repo_extract']
         pyu.setup()
@@ -123,6 +138,7 @@ class TestExecutionExtraction(object):
 @pytest.mark.usefixtures('cleandir')
 class TestExecutionRestart(object):
 
+    @synchronized(UPDATE_LOCK)
     def test_execution_one_file_restart(self, datadir, simpleserver, pyu):
         data_dir = datadir['update_repo_restart']
         pyu.setup()
