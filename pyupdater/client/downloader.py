@@ -217,6 +217,8 @@ class FileDownloader(object):
                 self.content_length > self.download_max_size):
             log.debug('Using file as storage since the file is too large')
             self.file_binary_type = 'file'
+        else:
+            self.file_binary_type = 'memory'
 
         # Setting start point to show progress
         recieved_data = 0
