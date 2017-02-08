@@ -38,7 +38,7 @@ def main():
     # update_folder. Let's randomized the company name to avoid that.
     config_path = os.path.join(home_dir, 'client_config.py')
     config_text = open(config_path, 'rt').read()
-    config_text = config_text.replace('Digital', 'Digital' + uuid.uuid4())
+    config_text = config_text.replace('Digital', 'Digital' + str(uuid.uuid4()))
     open(config_path, 'wt').write(config_text)
 
     # We use this flag to untar & move our binary to the
