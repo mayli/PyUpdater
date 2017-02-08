@@ -3,7 +3,6 @@ import os
 import sys
 import tarfile
 import zipfile
-import uuid
 
 from dsdev_utils.system import get_system
 
@@ -32,14 +31,6 @@ def extract(filename):
 
 def main():
     scripts = [('app_restart_01.py', '4.1'), ('app_restart_02.py', '4.2')]
-
-    # In unittest, the upgrade clients are running concurrently, and will have
-    # race condition reading/writing files since they share the same
-    # update_folder. Let's randomized the company name to avoid that.
-    config_path = os.path.join(home_dir, 'client_config.py')
-    config_text = open(config_path, 'rt').read()
-    config_text = config_text.replace('Digital', 'Digital' + str(uuid.uuid4()))
-    open(config_path, 'wt').write(config_text)
 
     # We use this flag to untar & move our binary to the
     # current working directory
