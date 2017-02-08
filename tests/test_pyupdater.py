@@ -37,7 +37,7 @@ import six
 from pyupdater import PyUpdater
 from tconfig import TConfig
 
-AUTO_UPDATE_PAUSE = 60
+AUTO_UPDATE_PAUSE = 120
 if sys.platform == 'win32':
     AUTO_UPDATE_PAUSE += 10
 
