@@ -214,7 +214,7 @@ class FileDownloader(object):
             log.debug('Callbacks will not show time left '
                       'or percent downloaded.')
         if (self.content_length is None or
-                self.content_length > self.download_max_size):
+                self.content_length > self.download_max_size or True):
             log.debug('Using file as storage since the file is too large')
             self.file_binary_type = 'file'
         else:
