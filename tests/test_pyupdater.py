@@ -37,8 +37,9 @@ import six
 from pyupdater import PyUpdater
 from tconfig import TConfig
 
-AUTO_UPDATE_PAUSE = 45
-TICK = 5
+AUTO_UPDATE_PAUSE = 25
+if sys.platform == 'win32':
+    AUTO_UPDATE_PAUSE += 10
 
 
 @pytest.mark.usefixtures('cleandir', 'create_keypack', 'pyu')
@@ -94,17 +95,10 @@ class TestExecutionExtraction(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
-            app_mtime = os.path.getmtime(app_name)
-
             # Call the binary to self update
             subprocess.call(app_name, shell=True)
             # Allow enough time for update process to complete.
-            for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
-                time.sleep(TICK)
-                if os.path.exists(app_name):
-                    new_app_mtime = os.path.getmtime(app_name)
-                    if app_mtime != new_app_mtime:
-                        break
+            time.sleep(AUTO_UPDATE_PAUSE)
 
             # Call again to check the output
             out = subprocess.check_output(app_name, shell=True)
@@ -152,17 +146,10 @@ class TestExecutionRestart(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
-            app_mtime = os.path.getmtime(app_name)
-
             # Call the binary to self update
             subprocess.call(app_name)
             # Allow enough time for update process to complete.
-            for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
-                time.sleep(TICK)
-                if os.path.exists(app_name):
-                    new_app_mtime = os.path.getmtime(app_name)
-                    if app_mtime != new_app_mtime:
-                        break
+            time.sleep(AUTO_UPDATE_PAUSE)
 
             simpleserver.stop()
 
