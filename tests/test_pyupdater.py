@@ -94,17 +94,17 @@ class TestExecutionExtraction(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
-            app_size, app_mtime = os.path.getsize(app_size), \
-                                  os.path.getmtime(app_size)
+            app_size, app_mtime = os.path.getsize(app_name), \
+                                  os.path.getmtime(app_name)
 
             # Call the binary to self update
             subprocess.call(app_name, shell=True)
             # Allow enough time for update process to complete.
             for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
                 time.sleep(TICK)
-                if os.path.exists(app_size):
-                    new_app_size, new_app_mtime = os.path.getsize(app_size), \
-                                          os.path.getmtime(app_size)
+                if os.path.exists(app_name):
+                    new_app_size, new_app_mtime = os.path.getsize(app_name), \
+                                          os.path.getmtime(app_name)
                     if app_size != new_app_size or app_mtime != new_app_mtime:
                         break
 
@@ -157,17 +157,17 @@ class TestExecutionRestart(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
-            app_size, app_mtime = os.path.getsize(app_size), \
-                                  os.path.getmtime(app_size)
+            app_size, app_mtime = os.path.getsize(app_name), \
+                                  os.path.getmtime(app_name)
 
             # Call the binary to self update
             subprocess.call(app_name)
             # Allow enough time for update process to complete.
             for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
                 time.sleep(TICK)
-                if os.path.exists(app_size):
-                    new_app_size, new_app_mtime = os.path.getsize(app_size), \
-                                          os.path.getmtime(app_size)
+                if os.path.exists(app_name):
+                    new_app_size, new_app_mtime = os.path.getsize(app_name), \
+                                          os.path.getmtime(app_name)
                     if app_size != new_app_size or app_mtime != new_app_mtime:
                         break
 
