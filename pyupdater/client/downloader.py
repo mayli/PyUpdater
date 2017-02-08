@@ -366,6 +366,7 @@ class FileDownloader(object):
         else:
             if os.path.exists(self.filename):
                 os.unlink(self.filename)
+            print("renaming %s to %s" % (self.file_binary_path, self.filename))
             os.rename(self.file_binary_path, self.filename)
 
     def _get_content_length(self, data):
