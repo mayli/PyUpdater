@@ -38,8 +38,7 @@ from pyupdater import PyUpdater
 from tconfig import TConfig
 
 AUTO_UPDATE_PAUSE = 120
-if sys.platform == 'win32':
-    AUTO_UPDATE_PAUSE += 10
+TICK = 5
 
 
 @pytest.mark.usefixtures('cleandir', 'create_keypack', 'pyu')
@@ -95,10 +94,22 @@ class TestExecutionExtraction(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
+            app_size, app_mtime = os.path.getsize(app_size), \
+                                  os.path.getmtime(app_size)
+
             # Call the binary to self update
             subprocess.call(app_name, shell=True)
             # Allow enough time for update process to complete.
-            time.sleep(AUTO_UPDATE_PAUSE)
+            for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
+                time.sleep(TICK)
+                if os.path.exists(app_size):
+                    new_app_size, new_app_mtime = os.path.getsize(app_size), \
+                                          os.path.getmtime(app_size)
+                    if app_size != new_app_size or app_mtime != new_app_mtime:
+                        break
+
+            else:
+                assert False, 'Timeout in waiting for update'
 
             # Call again to check the output
             out = subprocess.check_output(app_name, shell=True)
@@ -146,10 +157,22 @@ class TestExecutionRestart(object):
             if sys.platform != 'win32':
                 app_name = './{}'.format(app_name)
 
+            app_size, app_mtime = os.path.getsize(app_size), \
+                                  os.path.getmtime(app_size)
+
             # Call the binary to self update
             subprocess.call(app_name)
             # Allow enough time for update process to complete.
-            time.sleep(AUTO_UPDATE_PAUSE)
+            for _ in range(0, AUTO_UPDATE_PAUSE, TICK):
+                time.sleep(TICK)
+                if os.path.exists(app_size):
+                    new_app_size, new_app_mtime = os.path.getsize(app_size), \
+                                          os.path.getmtime(app_size)
+                    if app_size != new_app_size or app_mtime != new_app_mtime:
+                        break
+
+            else:
+                assert False, 'Timeout in waiting for update'
 
             simpleserver.stop()
 
